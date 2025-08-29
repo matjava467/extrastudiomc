@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Extra Studio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🎮 Extra Studio</h1>
+    <nav>
+      <button onclick="showPage('home')">Accueil</button>
+      <button onclick="showPage('pass')">Pass</button>
+      <button onclick="showPage('shop')">Boutique</button>
+      <button onclick="showPage('ranking')">Classement</button>
+      <button onclick="showPage('profile')">Mon Profil</button>
+      <button onclick="showPage('gifts')">Cadeaux 🎁</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="page active">
+      <h2>Bienvenue sur Extra Studio</h2>
+      <p>Un site compagnon pour Extra Client Minecraft.</p>
+    </section>
+
+    <section id="pass" class="page">
+      <h2>Pass</h2>
+      <p>Consultez vos pass actifs : Donkey Kong Bannanza, NCIS, etc.</p>
+    </section>
+
+    <section id="shop" class="page">
+      <h2>Boutique</h2>
+      <p>Cosmétiques, fonds d'écran et plus encore !</p>
+    </section>
+
+    <section id="ranking" class="page">
+      <h2>Classement</h2>
+      <p>Le classement mondial apparaîtra ici.</p>
+    </section>
+
+    <section id="profile" class="page">
+      <h2>Mon Profil</h2>
+      <p id="playerName">Pseudo : Joueur</p>
+      <p id="playerGrade">Grade : Crack</p>
+    </section>
+
+    <section id="gifts" class="page">
+      <h2>Cadeaux 🎁</h2>
+      <button onclick="openGift()">🎁 Ouvrir un cadeau</button>
+      <p id="giftResult"></p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
