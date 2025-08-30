@@ -1,0 +1,146 @@
+<!-- Dev Edition Request Form - Extra Studio -->
+<section id="dev-request" style="max-width:900px;margin:32px auto;padding:20px;background:#0f1724;color:#e6eef8;border-radius:12px;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;">
+  <h2 style="margin-top:0;color:#fff">Demande d'accès — Studio Extra • Developer Edition</h2>
+  <p style="color:#bcd2ee">
+    Remplis ce formulaire pour demander l'accès Dev. Après envoi, une issue sera créée automatiquement dans le dépôt GitHub du studio.
+    Tu devras ensuite passer sur notre Discord pour vérification et approbation.
+  </p>
+
+  <form id="devForm" autocomplete="on" novalidate>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <label style="display:block">
+        Pseudo Minecraft *
+        <input name="mcname" id="mcname" required placeholder="Ex: MonPseudo123" style="width:100%;padding:8px;border-radius:6px;border:1px solid #2b3650;background:#0b1220;color:#e6eef8">
+      </label>
+
+      <label style="display:block">
+        Pseudo GitHub *
+        <input name="ghname" id="ghname" required placeholder="Ex: tonPseudoGitHub" style="width:100%;padding:8px;border-radius:6px;border:1px solid #2b3650;background:#0b1220;color:#e6eef8">
+      </label>
+
+      <label style="display:block">
+        Email *
+        <input type="email" name="email" id="email" required placeholder="exemple@mail.com" style="width:100%;padding:8px;border-radius:6px;border:1px solid #2b3650;background:#0b1220;color:#e6eef8">
+      </label>
+
+      <label style="display:block">
+        Age *
+        <input type="number" name="age" id="age" required min="13" placeholder="Ton âge" style="width:100%;padding:8px;border-radius:6px;border:1px solid #2b3650;background:#0b1220;color:#e6eef8">
+      </label>
+    </div>
+
+    <label style="display:block;margin-top:12px;">
+      Lien profil GitHub / Portfolio (optionnel)
+      <input name="portfolio" id="portfolio" placeholder="https://github.com/..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #2b3650;background:#0b1220;color:#e6eef8">
+    </label>
+
+    <label style="display:block;margin-top:12px;">
+      Compétences & motivation *
+      <textarea name="motivation" id="motivation" rows="5" required placeholder="Ex: Je suis bon en textures, je veux proposer un pass sur le thème X..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #2b3650;background:#0b1220;color:#e6eef8"></textarea>
+    </label>
+
+    <label style="display:block;margin-top:12px;color:#cfe9ff">
+      Discord (Pseudo#0000) *
+      <input name="discord" id="discord" required placeholder="Ex: MonPseudo#1234" style="width:100%;padding:8px;border-radius:6px;border:1px solid #2b3650;background:#0b1220;color:#e6eef8">
+      <small style="display:block;color:#9fbbe0;margin-top:6px;">
+        Tu dois rejoindre le Discord du studio après avoir créé l'issue pour être approuvé. <a href="https://discord.gg/TON_INVITE" target="_blank" rel="noopener" style="color:#9bdcff">Rejoindre le Discord</a>
+      </small>
+    </label>
+
+    <!-- Honeypot anti-spam (invisible pour humains) -->
+    <input type="text" name="hp_field" id="hp_field" style="display:none">
+
+    <label style="display:block;margin-top:12px;">
+      <input type="checkbox" id="agree" required> J'accepte les <a href="/terms.html" target="_blank" style="color:#9bdcff">Conditions d'utilisation</a> et la <a href="/dev-policy.html" target="_blank" style="color:#9bdcff">politique Dev</a>. *
+    </label>
+
+    <div style="margin-top:16px;display:flex;gap:10px;align-items:center">
+      <button id="submitBtn" type="submit" style="background:#2b9cff;border:none;padding:10px 16px;border-radius:8px;color:#041025;cursor:pointer">Soumettre la demande</button>
+      <button type="button" id="resetBtn" style="background:#3b3b55;border:none;padding:10px 12px;border-radius:8px;color:#e6eef8;cursor:pointer">Réinitialiser</button>
+      <span id="status" style="margin-left:12px;color:#bcd2ee"></span>
+    </div>
+
+    <p style="color:#9fbbe0;font-size:13px;margin-top:12px;">
+      <strong>Note :</strong> Ce formulaire crée une <em>issue publique</em> sur le dépôt GitHub du studio (<code>matjava467/extrastudiomc</code>). N'y met pas d'informations sensibles.
+    </p>
+  </form>
+</section>
+
+<script>
+(function(){
+  const form = document.getElementById('devForm');
+  const status = document.getElementById('status');
+  const submitBtn = document.getElementById('submitBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  // Remplace si besoin par un autre repo
+  const GITHUB_NEW_ISSUE_URL = 'https://github.com/matjava467/extrastudiomc/issues/new';
+
+  function encodeParam(s){
+    return encodeURIComponent(s || '');
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    status.textContent = '';
+
+    // Honeypot anti-spam
+    if(document.getElementById('hp_field').value.trim() !== '') {
+      status.textContent = 'Spam détecté.';
+      return;
+    }
+
+    // Validation basique
+    const mcname = document.getElementById('mcname').value.trim();
+    const ghname = document.getElementById('ghname').value.trim();
+    const email  = document.getElementById('email').value.trim();
+    const age    = document.getElementById('age').value.trim();
+    const discord= document.getElementById('discord').value.trim();
+    const motivation = document.getElementById('motivation').value.trim();
+    const portfolio  = document.getElementById('portfolio').value.trim();
+    const agree = document.getElementById('agree').checked;
+
+    if(!mcname || !ghname || !email || !age || !discord || !motivation || !agree){
+      status.textContent = 'Remplis tous les champs obligatoires et accepte les conditions.';
+      return;
+    }
+
+    // Construire le titre et le corps de l'issue
+    const title = `[DEV REQUEST] ${mcname} / ${ghname}`;
+    const bodyLines = [
+      `**Pseudo Minecraft:** ${mcname}`,
+      `**Pseudo GitHub:** ${ghname}`,
+      `**Email:** ${email}`,
+      `**Age:** ${age}`,
+      `**Discord:** ${discord}`,
+      `**Portfolio:** ${portfolio || '—'}`,
+      `**Motivation / Compétences:**`,
+      '```',
+      motivation.replace(/\r?\n/g, '\n'),
+      '```',
+      '',
+      '> **Remarque**: l\'applicant doit rejoindre le Discord et poster dans <code>#dev-applications</code> pour vérification.',
+      '',
+      '---',
+      'Formulaire auto-généré depuis la page Dev Request'
+    ];
+
+    const url = GITHUB_NEW_ISSUE_URL + '?title=' + encodeParam(title) + '&body=' + encodeParam(bodyLines.join('\n'));
+
+    // Ouvre la nouvelle issue dans un onglet (l'utilisateur doit finaliser & soumettre)
+    window.open(url, '_blank', 'noopener');
+
+    status.style.color = '#9bdcff';
+    status.textContent = 'Une fenêtre s\'est ouverte pour créer l\'issue GitHub. Vérifie et clique sur "Submit new issue". Puis rejoins le Discord pour la validation.';
+    submitBtn.disabled = true;
+
+    // Laisser l'utilisateur réinitialiser
+  });
+
+  resetBtn.addEventListener('click', function(){
+    form.reset();
+    status.textContent = '';
+    submitBtn.disabled = false;
+  });
+})();
+</script>
